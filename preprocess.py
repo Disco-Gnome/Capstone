@@ -31,6 +31,7 @@ dfs = []
 
 # Check resource usage
 print("Dataset space in RAM:", round(pums_data.memory_usage(deep=True).sum() / 1024 ** 3, 4), "GB")
+
 #%% Infer NOC
 # Filter for children
 child_codes = ['25',  # Biological son or daughter
@@ -61,6 +62,9 @@ pums_data = pums_data[pums_data['PINCP'] > 0]
 # Drop 0 or negative salary income
 pums_data = pums_data[pums_data['WAGP'] > 0]
 
+#%% Add age-squared
+pums_data['AGE-SQUARED'] = pums_data['AGEP'] ** 2
+
 #%% Reduce and combine demographic codes
 # Make Hispanic binary
 # New mapping: 1==non-hispanic, 2==hispanic
@@ -86,7 +90,7 @@ pums_data['sex-race-ethnicity'] = pums_data['RAC1P'] + " " + pums_data['SEX']
 
 #%% Dissimilarity Indices
 
-#%%Percent with each baccalaureate major in each sex-race group
+#%% Percent with each baccalaureate major in each sex-race group
 
 #%% Dominance analysis
 
@@ -95,5 +99,3 @@ pums_data['sex-race-ethnicity'] = pums_data['RAC1P'] + " " + pums_data['SEX']
 
 #%% Kitigawa-Oaxaca-Blinder
 
-
-#%%
