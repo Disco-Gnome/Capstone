@@ -1,17 +1,17 @@
-﻿VAR,Notes
-AGEP,
-NATIVITY,
-WKWN,Exc. N/A
-WKHP,Exc. N/A
-OCCP,
-INDP,
-FOD1P,
-RAC1P,
-HISP,
-SEX,
-ESR,"Exc. N/A, Unemployed, Not in Labor Force"
-PINCP,"Exc. N/A, None, Loss"
-WAGP,"Exc. N/A, None"
-STATE,
-RELSHIPP,
-SERIALNO
+﻿VAR,Name,Notes
+AGEP,Age,
+NATIVITY,Nativity,
+WKWN,Weeks worked,"Exc. N/A, <52"
+WKHP,Hours worked,"Exc. N/A, <30"
+OCCP,Occupation,
+INDP,Industry,
+FOD1P,Degree field,
+RAC1P,Race,
+HISP,Hispanic,
+SEX,Sex,
+ESR,Employment Status,"Exc. N/A, Unemployed, Not in Labor Force"
+PINCP,Total income,"Exc. N/A, None, Loss"
+WAGP,Wages or salary income,"Exc. N/A, None"
+STATE,State,
+RELSHIPP,Relationship,
+SERIALNO,Person or unit serial number,
