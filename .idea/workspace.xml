@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="59f6b42f-3932-4a72-8246-e420d5bbb09a" name="Changes" comment="end of day commit">
+    <list default="true" id="59f6b42f-3932-4a72-8246-e420d5bbb09a" name="Changes" comment="further prepro. Added SCHL var">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vars.csv" beforeDir="false" afterPath="$PROJECT_DIR$/vars.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,6 +45,7 @@
     <MESSAGE value="File loading complete." />
     <MESSAGE value="Preprocessing complete" />
     <MESSAGE value="end of day commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="end of day commit" />
+    <MESSAGE value="further prepro. Added SCHL var" />
+    <option name="LAST_COMMIT_MESSAGE" value="further prepro. Added SCHL var" />
   </component>
 </project>
