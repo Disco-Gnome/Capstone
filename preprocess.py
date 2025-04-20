@@ -30,7 +30,7 @@ dfs = []
 # pums_data = pd.concat(dfs, ignore_index=True)
 
 # Check resource usage
-print("Dataset space in RAM:", round(pums_data.memory_usage(deep=True).sum() / 1024 ** 3, 4), "GB")
+print("Dataset RAM usage:", round(pums_data.memory_usage(deep=True).sum() / 1024 ** 3, 4), "GB")
 
 #%% Infer NOC
 # Filter for children
@@ -51,18 +51,22 @@ pums_data['NOC'] = pums_data['NOC'].fillna(0).astype(int)
 #%% Drop unwanted values
 # Drop NaN values
 pums_data.dropna(subset=['WKWN', 'WKHP', 'ESR', 'PINCP', 'WAGP'], inplace=True)
-# Drop less than 50 weeks worked per year
-pums_data = pums_data[pums_data['WKWN'] >= 50]
-# Drop less than 30 hours worked per week
-pums_data = pums_data[pums_data['WKHP'] >= 30]
 # Drop unemployed & not in labor force
 pums_data = pums_data[~pums_data['ESR'].isin(['3', '6'])]
 # Drop 0 or negative total income
 pums_data = pums_data[pums_data['PINCP'] > 0]
+# Drop educational attainment != BA
+pums_data = pums_data[pums_data['SCHL'] == 21]
 # Drop 0 or negative salary income
 pums_data = pums_data[pums_data['WAGP'] > 0]
+# Drop less than 30 hours worked per week
+pums_data = pums_data[pums_data['WKHP'] >= 30]
+# Drop less than 50 weeks worked per year
+pums_data = pums_data[pums_data['WKWN'] >= 50]
 
-#%% Add age-squared
+
+
+#%% Add age-squared var
 pums_data['AGE-SQUARED'] = pums_data['AGEP'] ** 2
 
 #%% Reduce and combine demographic codes
@@ -89,6 +93,7 @@ pums_data['SEX'] = np.where(pums_data['SEX'] == '1', 'Male', 'Female')
 pums_data['sex-race-ethnicity'] = pums_data['RAC1P'] + " " + pums_data['SEX']
 
 #%% Dissimilarity Indices
+
 
 #%% Percent with each baccalaureate major in each sex-race group
 
