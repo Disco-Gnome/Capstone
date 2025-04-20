@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="59f6b42f-3932-4a72-8246-e420d5bbb09a" name="Changes" comment="further prepro. Added SCHL var">
+    <list default="true" id="59f6b42f-3932-4a72-8246-e420d5bbb09a" name="Changes" comment="Duncan's D &amp; demo group by major table complete.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
     </list>
@@ -46,6 +46,7 @@
     <MESSAGE value="Preprocessing complete" />
     <MESSAGE value="end of day commit" />
     <MESSAGE value="further prepro. Added SCHL var" />
-    <option name="LAST_COMMIT_MESSAGE" value="further prepro. Added SCHL var" />
+    <MESSAGE value="Duncan's D &amp; demo group by major table complete." />
+    <option name="LAST_COMMIT_MESSAGE" value="Duncan's D &amp; demo group by major table complete." />
   </component>
 </project>

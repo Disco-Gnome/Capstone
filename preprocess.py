@@ -160,9 +160,10 @@ dissimilarity_table.to_csv("dissimilarity_table.csv", index=False)
 
 #%% Percent with each baccalaureate major in each sex-race group
 # Select majors to inspect
-major_selection = ["Business Management", "General Business", "Finance", "Mechanical Engineering",
+major_selection = ["Business Management And Administration", "General Business", "Finance", "Mechanical Engineering",
                    "Electrical Engineering", "Computer Engineering", "Computer Science", "General Education",
-                   "Elementary Education", "Nursing", "Economics", "English Lang & Lit.", "Criminal Justice"]
+                   "Elementary Education", "Nursing", "Economics", "English Language And Literature",
+                   "Criminal Justice And Fire Protection"]
 # init pivot table
 pivot = pd.DataFrame(index=major_selection)
 pivot.index.name = "Major"
@@ -185,6 +186,8 @@ pivot.to_csv('percent_major_by_group.csv')
 
 
 #%% Dominance analysis
+
+
 
 #%% Run Regressions
 
