@@ -16,3 +16,4 @@ STATE,State,
 WAGP,Wages or salary income,"Exc. N/A, None"
 WKHP,Hours worked,"Exc. N/A, <30"
 WKWN,Weeks worked,"Exc. N/A, <52"
+ADJINC,Income adjustment factor,

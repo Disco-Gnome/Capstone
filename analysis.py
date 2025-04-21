@@ -39,6 +39,8 @@ print("Dataset RAM usage:", round(pums_data.memory_usage(deep=True).sum() / 1024
 
 # Garbage collect
 del(vars, majors_codes_df, usecols, f, z)
+
+
 #%% Drop unwanted values
 # Drop NaN values
 pums_data.dropna(subset=['WKWN', 'WKHP', 'ESR', 'PINCP', 'WAGP', 'FOD1P'], inplace=True)
@@ -54,6 +56,33 @@ pums_data = pums_data[pums_data['WAGP'] > 0]
 pums_data = pums_data[pums_data['WKHP'] >= 30]
 # Drop less than 50 weeks worked per year
 pums_data = pums_data[pums_data['WKWN'] >= 50]
+
+
+#%% Inflation-adjust WAGP
+# Inflation data from BLS CPI: https://www.bls.gov/cpi/tables/home.htm
+pums_data['WAGP_2021'] = pums_data['WAGP'] * (pums_data['ADJINC'] / 1_000_000)
+cpi_2021 = 270.9
+cpi_2023 = 303.9
+adjustment_2021_to_2023 = cpi_2023 / cpi_2021  # ~1.1218
+pums_data['WAGP_2023'] = pums_data['WAGP_2021'] * adjustment_2021_to_2023
+
+# Clean & garbage collect
+pums_data.drop('WAGP_2021', axis=1, inplace=True)
+del(cpi_2021, cpi_2023, adjustment_2021_to_2023)
+
+#%% Add log earnings var
+pums_data['log_WAGP'] = np.log(pums_data['WAGP_2023'])
+
+
+#%% Convert major from codes to names
+pums_data['FOD1P'] = pums_data['FOD1P'].map(majors_codes_dict)
+
+# Garbage collect
+del(majors_codes_dict)
+
+
+#%% Add age-squared var
+pums_data['AGE-SQUARED'] = pums_data['AGEP'] ** 2
 
 
 #%% Infer NOC (Number of children)
@@ -107,16 +136,6 @@ pums_data['race-ethnicity-sex'] = pums_data['RAC1P'] + " " + pums_data['SEX']
 # Garbage Collect
 del(race_map)
 
-#%% Convert major from codes to names
-pums_data['FOD1P'] = pums_data['FOD1P'].map(majors_codes_dict)
-
-# Garbage collect
-del(majors_codes_dict)
-#%% Add age-squared var
-pums_data['AGE-SQUARED'] = pums_data['AGEP'] ** 2
-
-#%% Add log earnings var
-pums_data['log_WAGP'] = np.log(pums_data['WAGP'])
 
 #%% Dissimilarity Indices
 def dissimilarity_index(ref_dist, group_dist):
@@ -160,7 +179,7 @@ for group in groups:  # For each race-ethnicity-sex group
         mean_diff = 0.0
     else:  # Else calc D
         D = dissimilarity_index(ref_major_dist, group_major_dist)
-        mean_diff = group_data['WAGP'].mean() - ref_group['WAGP'].mean()
+        mean_diff = group_data['WAGP_2023'].mean() - ref_group['WAGP_2023'].mean()
 
     # Create a list of dicts for each row
     rows.append({
@@ -177,7 +196,7 @@ dissimilarity_table = pd.DataFrame(rows)
 dissimilarity_table.to_csv("dissimilarity_table.csv", index=False)
 
 # Garbage collect
-del(ref_group, ref_major_dist, groups, rows, group, group_data, group_major_dist, D, mean_diff, dissimilarity_table)
+del(ref_group, ref_major_dist, groups, rows, group, group_data, group_major_dist, D, mean_diff)
 #%% Percent with each baccalaureate major in each sex-race group
 # Select majors to inspect
 major_selection = ["Business Management And Administration", "General Business", "Finance", "Mechanical Engineering",
@@ -205,7 +224,7 @@ pivot = pivot.round(3)
 pivot.to_csv('percent_major_by_group.csv')
 
 # Garbage collect
-del(major_selection, pivot, groups, group_data, group_total, major_counts)
+del(major_selection, groups, group_data, group_total, major_counts)
 #%% Dominance analysis 1: without occupation & industry
 # Init dataset for domin
 df_for_domin = pums_data[['AGEP', 'AGE-SQUARED', 'HISP', 'log_WAGP', 'NOC', 'SEX', 'STATE', 'WKHP', 'WKWN']]
@@ -273,6 +292,8 @@ dominance_table1 = pd.concat([dominance_table1, total_row, r_squared_row, n_row]
 dominance_table1.to_csv('dominance_table_without_OCCPINDP.csv')
 
 # del(df_for_domin, predictor_sets, all_predictors, X, y, total_row, r_squared_row, n_row, dominance_reg1, dominance_df1, dominance_table1)
+
+
 #%% Dominance analysis 2: with occupation & industry
 
 # Init dataset for domin
@@ -342,7 +363,10 @@ dominance_table2 = pd.concat([dominance_table2, total_row, r_squared_row, n_row]
 dominance_table2.to_csv('dominance_table_with_OCCPINDP.csv')
 
 # del(df_for_domin, predictor_sets, all_predictors, X, y, total_row, r_squared_row, n_row, dominance_reg2, dominance_df2, dominance_table2)
+
+
 #%% Run Regressions
+
 
 
 #%% Kitigawa-Oaxaca-Blinder
