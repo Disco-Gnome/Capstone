@@ -272,7 +272,7 @@ dominance_table1 = pd.concat([dominance_table1, total_row, r_squared_row, n_row]
 
 dominance_table1.to_csv('dominance_table_without_OCCPINDP.csv')
 
-del(df_for_domin, predictor_sets, all_predictors, X, y, total_row, r_squared_row, n_row, dominance_reg1, dominance_df1, dominance_table1)
+# del(df_for_domin, predictor_sets, all_predictors, X, y, total_row, r_squared_row, n_row, dominance_reg1, dominance_df1, dominance_table1)
 #%% Dominance analysis 2: with occupation & industry
 
 # Init dataset for domin
@@ -316,7 +316,7 @@ dominance_table2 = dominance_df2.reset_index().rename(
 dominance_table2 = dominance_table2[['Predictor or Set of Predictors', 'Standardized Dominance with OCCP & INDP']]
 
 # Normalize percent to proportion
-dominance_table2['Standardized Dominance'] /= 100
+dominance_table2['Standardized Dominance with OCCP & INDP'] /= 100
 
 # Add TOTAL row
 total_row = pd.DataFrame({
@@ -341,7 +341,7 @@ dominance_table2 = pd.concat([dominance_table2, total_row, r_squared_row, n_row]
 
 dominance_table2.to_csv('dominance_table_with_OCCPINDP.csv')
 
-del(df_for_domin, predictor_sets, all_predictors, X, y, total_row, r_squared_row, n_row, dominance_reg2, dominance_df2, dominance_table2)
+# del(df_for_domin, predictor_sets, all_predictors, X, y, total_row, r_squared_row, n_row, dominance_reg2, dominance_df2, dominance_table2)
 #%% Run Regressions
 
 

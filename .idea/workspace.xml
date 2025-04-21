@@ -4,15 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="59f6b42f-3932-4a72-8246-e420d5bbb09a" name="Changes" comment="deleted old D table">
-      <change beforePath="$PROJECT_DIR$/.idea/Capstone.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Capstone.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dissimilarity_table.csv" beforeDir="false" afterPath="$PROJECT_DIR$/dissimilarity_table.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/percent_major_by_group.csv" beforeDir="false" afterPath="$PROJECT_DIR$/percent_major_by_group.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-    </list>
+    <list default="true" id="59f6b42f-3932-4a72-8246-e420d5bbb09a" name="Changes" comment="dominance analysis complete" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -54,6 +46,7 @@
     <MESSAGE value="Duncan's D &amp; demo group by major table complete." />
     <MESSAGE value="Added tables" />
     <MESSAGE value="deleted old D table" />
-    <option name="LAST_COMMIT_MESSAGE" value="deleted old D table" />
+    <MESSAGE value="dominance analysis complete" />
+    <option name="LAST_COMMIT_MESSAGE" value="dominance analysis complete" />
   </component>
 </project>
