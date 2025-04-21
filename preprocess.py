@@ -1,5 +1,6 @@
-import pandas as pd
+from dominance_analysis import Dominance
 import numpy as np
+import pandas as pd
 import zipfile
 
 # TODO: Pandas for prototyping, switch to Spark dfs for final
@@ -10,17 +11,7 @@ majors_codes_df = pd.read_csv('Major_Codes_Mapping.csv')
 majors_codes_dict = {row['code']: row['name'] for _, row in majors_codes_df.iterrows()}
 usecols = list(vars['VAR'])
 
-# For testing
-with zipfile.ZipFile('csv_pny.zip') as z:
-    with z.open('psam_p36.csv') as f:
-        pums_data = pd.read_csv(f,
-                                usecols=usecols,
-                                dtype={'Nativity': str, 'OCCP': str, 'INDP': str, 'FOD1P': str, 'RAC1P': str,
-                                       'HISP': str, 'SCHL': str, 'SEX': str, 'ESR': str, 'STATE': str, 'RELSHIPP': str,
-                                       'SERIALNO': str},
-                                nrows=200000)
-
-# For Final analysis
+# PUMS 2023 5-Year: https://www2.census.gov/programs-surveys/acs/data/pums/2023/5-Year/
 # us_files = ['psam_pusa.csv', 'psam_pusb.csv', 'psam_pusc.csv', 'psam_pusd.csv']
 # dfs = []
 #
@@ -32,10 +23,22 @@ with zipfile.ZipFile('csv_pny.zip') as z:
 #             dfs.append(df_part)
 # pums_data = pd.concat(dfs, ignore_index=True)
 
+# NY only for testing
+with zipfile.ZipFile('csv_pny.zip') as z:
+    with z.open('psam_p36.csv') as f:
+        pums_data = pd.read_csv(f,
+                                usecols=usecols,
+                                dtype={'Nativity': str, 'OCCP': str, 'INDP': str, 'FOD1P': str, 'RAC1P': str,
+                                       'HISP': str, 'SCHL': str, 'SEX': str, 'ESR': str, 'STATE': str, 'RELSHIPP': str,
+                                       'SERIALNO': str},
+                                nrows=300000
+                                )
+
 # Check resource usage
 print("Dataset RAM usage:", round(pums_data.memory_usage(deep=True).sum() / 1024 ** 3, 4), "GB")
 
-
+# Garbage collect
+del(vars, majors_codes_df, usecols, f, z)
 #%% Drop unwanted values
 # Drop NaN values
 pums_data.dropna(subset=['WKWN', 'WKHP', 'ESR', 'PINCP', 'WAGP', 'FOD1P'], inplace=True)
@@ -68,12 +71,17 @@ child_counts = children.groupby('SERIALNO').size().reset_index(name='NOC')
 pums_data = pums_data.merge(child_counts, on='SERIALNO', how='left')
 # Fill households with 0 children
 pums_data['NOC'] = pums_data['NOC'].fillna(0).astype(int)
+# Make binary for children in household
+# ~98% of respondents have 0-1 children, so treating as continuous may not enhance analysis, and could hinder
+# interpretability & overcomplicate dominance analysis.
+pums_data['NOC'] = np.where(pums_data['NOC'] == 0, 0, 1)
+# Convert to string to avoid statistical methods inferring category distance from integer values.
+pums_data['NOC'] = pums_data['NOC'].astype(str)
+# Drop RELSHIPP, no longer needed
+pums_data.drop('RELSHIPP', axis=1, inplace=True)
 
-
-#%% Add age-squared var
-pums_data['AGE-SQUARED'] = pums_data['AGEP'] ** 2
-
-
+# Garbage collect
+del(child_codes, children, child_counts)
 #%% Reduce and combine demographic codes
 # Make Hispanic binary
 pums_data['HISP'] = np.where(pums_data['HISP'] == '01', 'non-Hispanic', 'Hispanic')
@@ -96,19 +104,30 @@ pums_data['SEX'] = np.where(pums_data['SEX'] == '1', 'Male', 'Female')
 # Create sex-race-ethnicity groups
 pums_data['race-ethnicity-sex'] = pums_data['RAC1P'] + " " + pums_data['SEX']
 
-#%% Convert major from codes to names
+# Garbage Collect
+del(race_map)
 
+#%% Convert major from codes to names
 pums_data['FOD1P'] = pums_data['FOD1P'].map(majors_codes_dict)
 
+# Garbage collect
+del(majors_codes_dict)
+#%% Add age-squared var
+pums_data['AGE-SQUARED'] = pums_data['AGEP'] ** 2
+
+#%% Add log earnings var
+pums_data['log_WAGP'] = np.log(pums_data['WAGP'])
 
 #%% Dissimilarity Indices
 def dissimilarity_index(ref_dist, group_dist):
     """
-    Compute dissimilarity index between 2 distributions.
+    Compute dissimilarity index between 2 distributions. Duncan's D is the proportion of samples in a group that
+    would have to change categories in some categorical variable to obtain the same distribution across that variable
+    as some reference group.
 
     :param ref_dist: The reference distribution.
     :type ref_dist: pd.core.series.Series
-    :param group_dist: The comparison distribution.
+    :param group_dist: The distribution to compare to the reference.
     :type group_dist: pd.core.series.Series
 
     :return: Duncan's dissimilarity index.
@@ -157,7 +176,8 @@ dissimilarity_table = pd.DataFrame(rows)
 # Save table
 dissimilarity_table.to_csv("dissimilarity_table.csv", index=False)
 
-
+# Garbage collect
+del(ref_group, ref_major_dist, groups, rows, group, group_data, group_major_dist, D, mean_diff, dissimilarity_table)
 #%% Percent with each baccalaureate major in each sex-race group
 # Select majors to inspect
 major_selection = ["Business Management And Administration", "General Business", "Finance", "Mechanical Engineering",
@@ -184,11 +204,144 @@ pivot = pivot.round(3)
 # Save table
 pivot.to_csv('percent_major_by_group.csv')
 
+# Garbage collect
+del(major_selection, pivot, groups, group_data, group_total, major_counts)
+#%% Dominance analysis 1: without occupation & industry
+# Init dataset for domin
+df_for_domin = pums_data[['AGEP', 'AGE-SQUARED', 'HISP', 'log_WAGP', 'NOC', 'SEX', 'STATE', 'WKHP', 'WKWN']]
 
-#%% Dominance analysis
+# One-hot encode categorical vars
+df_for_domin = pd.get_dummies(df_for_domin,
+                              columns=['HISP',  'SEX', 'STATE'],
+                              drop_first=True)  # Drop first cat to avoid redundant data
 
+# Define predictor sets
+predictor_sets = {
+    'sex_parenthood': [col for col in df_for_domin.columns if col.startswith('SEX_')] + ['NOC'],
+    'ethnicity': [col for col in df_for_domin.columns if col.startswith("HISP_")],
+    'age': ['AGEP', 'AGE-SQUARED'],
+    'state': [col for col in df_for_domin.columns if col.startswith("STATE_")],
+    'time_worked': ['WKHP', 'WKWN']
+}
 
+# Flatten to single list of all predictors
+all_predictors = [var for group in predictor_sets.values() for var in group]
 
+# Run dominance analysis
+X = df_for_domin[all_predictors]
+y = df_for_domin['log_WAGP']
+
+dominance_reg1 = Dominance(data=df_for_domin, target='log_WAGP', objective=1)
+dominance_reg1.incremental_rsquare()
+dominance_df1 = dominance_reg1.dominance_stats()
+
+# Reset the index so the predictor names become a column
+dominance_table1 = dominance_df1.reset_index().rename(
+    columns={
+        'index': 'Predictor or Set of Predictors',
+        'Percentage Relative Importance': 'Standardized Dominance'
+    }
+)
+
+# Keep only the Std Domins
+dominance_table1 = dominance_table1[['Predictor or Set of Predictors', 'Standardized Dominance']]
+
+# Normalize percent to proportion
+dominance_table1['Standardized Dominance'] /= 100
+
+# Add TOTAL row
+total_row = pd.DataFrame({
+    'Predictor or Set of Predictors': ['TOTAL'],
+    'Standardized Dominance': [dominance_table1['Standardized Dominance'].sum()]
+})
+
+# Add R² row
+r_squared_row = pd.DataFrame({
+    'Predictor or Set of Predictors': ['% Variance Explained (R²)'],
+    'Standardized Dominance':  dominance_df1['Total Dominance'].sum()
+})
+
+# Add N row
+n_row = pd.DataFrame({
+    'Predictor or Set of Predictors': ['N'],
+    'Standardized Dominance': [len(df_for_domin)]
+})
+
+# Concatenate all
+dominance_table1 = pd.concat([dominance_table1, total_row, r_squared_row, n_row], ignore_index=True)
+
+dominance_table1.to_csv('dominance_table_without_OCCPINDP.csv')
+
+del(df_for_domin, predictor_sets, all_predictors, X, y, total_row, r_squared_row, n_row, dominance_reg1, dominance_df1, dominance_table1)
+#%% Dominance analysis 2: with occupation & industry
+
+# Init dataset for domin
+df_for_domin = pums_data[['AGEP', 'AGE-SQUARED', 'HISP', 'INDP', 'log_WAGP', 'NOC', 'OCCP', 'SEX', 'STATE', 'WKHP', 'WKWN']]
+
+# One-hot encode categorical vars
+df_for_domin = pd.get_dummies(df_for_domin,
+                              columns=['HISP', 'INDP', 'OCCP',  'SEX', 'STATE'],
+                              drop_first=True)  # Drop first cat to avoid redundant data
+
+# Define predictor sets
+predictor_sets = {
+    'sex_parenthood': [col for col in df_for_domin.columns if col.startswith('SEX_')] + ['NOC'],
+    'ethnicity': [col for col in df_for_domin.columns if col.startswith("HISP_")],
+    'age': ['AGEP', 'AGE-SQUARED'],
+    'state': [col for col in df_for_domin.columns if col.startswith("STATE_")],
+    'time_worked': ['WKHP', 'WKWN'],
+    'occupation_industry': [col for col in df_for_domin.columns if col.startswith('OCCP_') or col.startswith('INDP_')]
+}
+
+# Flatten to single list of all predictors
+all_predictors = [var for group in predictor_sets.values() for var in group]
+
+# Run dominance analysis
+X = df_for_domin[all_predictors]
+y = df_for_domin['log_WAGP']
+
+dominance_reg2 = Dominance(data=df_for_domin, target='log_WAGP', objective=1)
+dominance_reg2.incremental_rsquare()
+dominance_df2 = dominance_reg2.dominance_stats()
+
+# Reset the index so the predictor names become a column
+dominance_table2 = dominance_df2.reset_index().rename(
+    columns={
+        'index': 'Predictor or Set of Predictors',
+        'Percentage Relative Importance': 'Standardized Dominance with OCCP & INDP'
+    }
+)
+
+# Keep only the Std Domins
+dominance_table2 = dominance_table2[['Predictor or Set of Predictors', 'Standardized Dominance with OCCP & INDP']]
+
+# Normalize percent to proportion
+dominance_table2['Standardized Dominance'] /= 100
+
+# Add TOTAL row
+total_row = pd.DataFrame({
+    'Predictor or Set of Predictors': ['TOTAL'],
+    'Standardized Dominance with OCCP & INDP': [dominance_table2['Standardized Dominance with OCCP & INDP'].sum()]
+})
+
+# Add R² row
+r_squared_row = pd.DataFrame({
+    'Predictor or Set of Predictors': ['% Variance Explained (R²)'],
+    'Standardized Dominance with OCCP & INDP':  dominance_df2['Total Dominance'].sum()
+})
+
+# Add N row
+n_row = pd.DataFrame({
+    'Predictor or Set of Predictors': ['N'],
+    'Standardized Dominance with OCCP & INDP': [len(df_for_domin)]
+})
+
+# Concatenate all
+dominance_table2 = pd.concat([dominance_table2, total_row, r_squared_row, n_row], ignore_index=True)
+
+dominance_table2.to_csv('dominance_table_with_OCCPINDP.csv')
+
+del(df_for_domin, predictor_sets, all_predictors, X, y, total_row, r_squared_row, n_row, dominance_reg2, dominance_df2, dominance_table2)
 #%% Run Regressions
 
 

@@ -1,1 +1,5 @@
+numpy==1.23.5
+bokeh==2.4.3
+dominance-analysis==1.1.9
+ipython==7.34.0
 pandas
