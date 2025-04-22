@@ -1,0 +1,174 @@
+code,name,five_group_category
+bbbb,N/A (less than bachelor's degree),Unclassified
+6403,United States History,Arts Humanities and Other
+6402,History,Arts Humanities and Other
+6299,Miscellaneous Business And Medical Administration,Business
+6212,Management Information Systems And Statistics,Business
+6211,Hospitality Management,Business
+6210,International Business,Business
+6209,Human Resources And Personnel Management,Business
+6207,Finance,Business
+6206,Marketing And Marketing Research,Business
+6205,Business Economics,Business
+6204,Operations Logistics And E-Commerce,Business
+6203,Business Management And Administration,Business
+6202,Actuarial Science,Business
+6201,Accounting,Business
+6200,General Business,Business
+6199,Miscellaneous Health Medical Professions,Science and Engineering Related
+6110,Community And Public Health,Science and Engineering Related
+6109,Treatment Therapy Professions,Science and Engineering Related
+6108,Pharmacy Pharmaceutical Sciences And Administration,Science and Engineering Related
+6107,Nursing,Science and Engineering Related
+6106,Health And Medical Preparatory Programs,Science and Engineering Related
+6105,Medical Technologies Technicians,Science and Engineering Related
+6104,Medical Assisting Services,Science and Engineering Related
+6103,Health And Medical Administrative Services,Science and Engineering Related
+6102,Communication Disorders Sciences And Services,Science and Engineering Related
+6100,General Medical And Health Services,Science and Engineering Related
+6099,Miscellaneous Fine Arts,Arts Humanities and Other
+6007,Studio Arts,Arts Humanities and Other
+6006,Art History And Criticism,Arts Humanities and Other
+6005,Film Video And Photographic Arts,Arts Humanities and Other
+6004,Commercial Art And Graphic Design,Arts Humanities and Other
+6003,Visual And Performing Arts,Arts Humanities and Other
+6002,Music,Arts Humanities and Other
+6001,Drama And Theater Arts,Arts Humanities and Other
+6000,Fine Arts,Arts Humanities and Other
+5901,Transportation Sciences And Technologies,Arts Humanities and Other
+5701,"Electrical, Mechanical, And Precision Technologies And",Science and Engineering
+5601,Construction Services,Arts Humanities and Other
+5599,Miscellaneous Social Sciences,Science and Engineering
+5507,Sociology,Science and Engineering
+5506,Political Science And Government,Science and Engineering
+5505,International Relations,Science and Engineering
+5504,Geography,Science and Engineering
+5503,Criminology,Science and Engineering
+5502,Anthropology And Archeology,Science and Engineering
+5501,Economics,Science and Engineering
+5500,General Social Sciences,Science and Engineering
+5404,Social Work,Arts Humanities and Other
+5403,Human Services And Community Organization,Arts Humanities and Other
+5402,Public Policy,Arts Humanities and Other
+5401,Public Administration,Arts Humanities and Other
+5301,Criminal Justice And Fire Protection,Arts Humanities and Other
+5299,Miscellaneous Psychology,Science and Engineering
+5206,Social Psychology,Science and Engineering
+5205,Industrial And Organizational Psychology,Science and Engineering
+5203,Counseling Psychology,Science and Engineering
+5202,Clinical Psychology,Science and Engineering
+5201,Educational Psychology,Science and Engineering
+5200,Psychology,Science and Engineering
+5102,"Nuclear, Industrial Radiology, And Biological Technologies",Science and Engineering
+5098,Multi-Disciplinary Or General Science,Science and Engineering
+5008,Materials Science,Science and Engineering
+5007,Physics,Science and Engineering
+5006,Oceanography,Science and Engineering
+5005,Geosciences,Science and Engineering
+5004,Geology And Earth Science,Science and Engineering
+5003,Chemistry,Science and Engineering
+5002,Atmospheric Sciences And Meteorology,Science and Engineering
+5001,Astronomy And Astrophysics,Science and Engineering
+5000,Physical Sciences,Science and Engineering
+4901,Theology And Religious Vocations,Arts Humanities and Other
+4801,Philosophy And Religious Studies,Arts Humanities and Other
+4101,Physical Fitness Parks Recreation And Leisure,Science and Engineering Related
+4007,Interdisciplinary Social Sciences,Science and Engineering
+4006,Cognitive Science And Biopsychology,Science and Engineering
+4005,Mathematics And Computer Science,Science and Engineering
+4002,Nutrition Sciences,Science and Engineering
+4001,Intercultural And International Studies,Science and Engineering
+4000,Multi/Interdisciplinary Studies,Arts Humanities and Other
+3801,Military Technologies,Arts Humanities and Other
+3702,Statistics And Decision Science,Science and Engineering
+3701,Applied Mathematics,Science and Engineering
+3700,Mathematics,Science and Engineering
+3699,Miscellaneous Biology,Science and Engineering
+3611,Neuroscience,Science and Engineering
+3609,Zoology,Science and Engineering
+3608,Physiology,Science and Engineering
+3607,Pharmacology,Science and Engineering
+3606,Microbiology,Science and Engineering
+3605,Genetics,Science and Engineering
+3604,Ecology,Science and Engineering
+3603,Molecular Biology,Science and Engineering
+3602,Botany,Science and Engineering
+3601,Biochemical Sciences,Science and Engineering
+3600,Biology,Science and Engineering
+3501,Library Science,Arts Humanities and Other
+3402,Humanities,Arts Humanities and Other
+3401,Liberal Arts,Arts Humanities and Other
+3302,Composition And Rhetoric,Arts Humanities and Other
+3301,English Language And Literature,Arts Humanities and Other
+3202,Pre-Law And Legal Studies,Arts Humanities and Other
+2901,Family And Consumer Sciences,Arts Humanities and Other
+2603,Other Foreign Languages,Arts Humanities and Other
+2602,French German Latin And Other Common Foreign Language Studies,Arts Humanities and Other
+2601,Linguistics And Comparative Language And Literature,Arts Humanities and Other
+2599,Miscellaneous Engineering Technologies,Science and Engineering Related
+2504,Mechanical Engineering Related Technologies,Science and Engineering Related
+2503,Industrial Production Technologies,Science and Engineering Related
+2502,Electrical Engineering Technology,Science and Engineering Related
+2501,Engineering And Industrial Management,Science and Engineering Related
+2500,Engineering Technologies,Science and Engineering Related
+2499,Miscellaneous Engineering,Science and Engineering
+2419,Petroleum Engineering,Science and Engineering
+2418,Nuclear Engineering,Science and Engineering
+2417,Naval Architecture And Marine Engineering,Science and Engineering
+2416,Mining And Mineral Engineering,Science and Engineering
+2415,Metallurgical Engineering,Science and Engineering
+2414,Mechanical Engineering,Science and Engineering
+2413,Materials Engineering And Materials Science,Science and Engineering
+2412,Industrial And Manufacturing Engineering,Science and Engineering
+2411,Geological And Geophysical Engineering,Science and Engineering
+2410,Environmental Engineering,Science and Engineering
+2409,Engineering Mechanics Physics And Science,Science and Engineering
+2408,Electrical Engineering,Science and Engineering
+2407,Computer Engineering,Science and Engineering
+2406,Civil Engineering,Science and Engineering
+2405,Chemical Engineering,Science and Engineering
+2404,Biomedical Engineering,Science and Engineering
+2403,Architectural Engineering,Science and Engineering
+2402,Biological Engineering,Science and Engineering
+2401,Aerospace Engineering,Science and Engineering
+2400,General Engineering,Science and Engineering
+2399,Miscellaneous Education,Education
+2314,Art And Music Education,Education
+2313,Language And Drama Education,Education
+2312,Teacher Education: Multiple Levels,Education
+2311,Social Science Or History Teacher Education,Education
+2310,Special Needs Education,Education
+2309,Secondary Teacher Education,Education
+2308,Science And Computer Teacher Education,Science and Engineering
+2307,Early Childhood Education,Education
+2306,Physical And Health Education Teaching,Education
+2305,Mathematics Teacher Education,Science and Engineering Related
+2304,Elementary Education,Education
+2303,School Student Counseling,Education
+2301,Educational Administration And Supervision,Education
+2300,General Education,Education
+2201,Cosmetology Services And Culinary Arts,Arts Humanities and Other
+2107,Computer Networking And Telecommunications,Science and Engineering
+2106,Computer Administration Management And Security,Science and Engineering
+2105,Information Sciences,Science and Engineering
+2102,Computer Science,Science and Engineering
+2101,Computer Programming And Data Processing,Science and Engineering
+2100,Computer And Information Systems,Science and Engineering
+2001,Communication Technologies,Arts Humanities and Other
+1904,Advertising And Public Relations,Arts Humanities and Other
+1903,Mass Media,Arts Humanities and Other
+1902,Journalism,Arts Humanities and Other
+1901,Communications,Arts Humanities and Other
+1501,Area Ethnic And Civilization Studies,Science and Engineering
+1401,Architecture,Science and Engineering Related
+1303,Natural Resources Management,Science and Engineering
+1302,Forestry,Science and Engineering
+1301,Environmental Science,Science and Engineering
+1199,Miscellaneous Agriculture,Science and Engineering
+1106,Soil Science,Science and Engineering
+1105,Plant Science And Agronomy,Science and Engineering
+1104,Food Science,Science and Engineering
+1103,Animal Sciences,Science and Engineering
+1102,Agricultural Economics,Science and Engineering
+1101,Agriculture Production And Management,Science and Engineering
+1100,General Agriculture,Science and Engineering

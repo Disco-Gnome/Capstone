@@ -1,4 +1,5 @@
 from dominance_analysis import Dominance
+from statsmodels.stats.oaxaca import OaxacaBlinder
 import numpy as np
 import pandas as pd
 import zipfile
@@ -7,8 +8,10 @@ import zipfile
 
 # Data dict: https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2021.pdf
 vars = pd.read_csv('vars.csv')
-majors_codes_df = pd.read_csv('Major_Codes_Mapping.csv')
+majors_codes_df = pd.read_csv('Majors_mappings.csv')
 majors_codes_dict = {row['code']: row['name'] for _, row in majors_codes_df.iterrows()}
+major_groups_dict = {row['name']: row['five_group_category'] for _, row in majors_codes_df.iterrows()}
+
 usecols = list(vars['VAR'])
 
 # PUMS 2023 5-Year: https://www2.census.gov/programs-surveys/acs/data/pums/2023/5-Year/
@@ -74,11 +77,13 @@ del(cpi_2021, cpi_2023, adjustment_2021_to_2023)
 pums_data['log_WAGP'] = np.log(pums_data['WAGP_2023'])
 
 
-#%% Convert major from codes to names
+#%% Convert major from codes to names & introduce 5-group categories
 pums_data['FOD1P'] = pums_data['FOD1P'].map(majors_codes_dict)
 
+pums_data['FOD1P5'] = pums_data['FOD1P'].map(major_groups_dict)
+
 # Garbage collect
-del(majors_codes_dict)
+del(majors_codes_dict, major_groups_dict)
 
 
 #%% Add age-squared var
@@ -366,8 +371,30 @@ dominance_table2.to_csv('dominance_table_with_OCCPINDP.csv')
 
 
 #%% Run Regressions
+# Get ref group
+ref_group = pums_data[pums_data['race-ethnicity-sex'] == 'White non-Hispanic Male']
 
+# Get demographic groups
+groups = pums_data['race-ethnicity-sex'].unique()
+groups = groups[groups != 'White non-Hispanic Male']
 
+oaxacas_dict = {}
+for group in groups:
+    # Get comparison group
+    comparison_group = pums_data[pums_data['race-ethnicity-sex'] == group]
+    # Combine both groups
+    regression_df = pd.concat([ref_group, comparison_group])
+    # One-hot encode relevant categorical vars
+    regression_df = pd.get_dummies(regression_df, columns=['FOD1P', 'STATE', 'OCCP', 'INDP', 'Nativity'], drop_first=True)
+    # Get ind var data, ignoring dependent var and group
+    X_cols = [col for col in regression_df.columns if col not in ['log_WAGP', 'race-ethnicity-sex']]
+    # Define predictors and target
+    X = regression_df[X_cols]
+    y = regression_df['log_WAGP']
+    regression_df['group'] = (regression_df['race-ethnicity-sex'] == 'White non-Hispanic Male').astype(int)
+    oaxaca = OaxacaBlinder(endog=regression_df['log_WAGP'], exog=X, group=regression_df['group'])
+    results = oaxaca.fit()
+    oaxacas_dict[group] = results
 
 #%% Kitigawa-Oaxaca-Blinder
 
