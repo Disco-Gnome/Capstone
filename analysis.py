@@ -1,5 +1,7 @@
 from dominance_analysis import Dominance
 from statsmodels.stats.oaxaca import OaxacaBlinder
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.linear_model import LinearRegression
 import numpy as np
 import pandas as pd
 import zipfile
@@ -27,7 +29,9 @@ with zipfile.ZipFile('csv_pus.zip') as z:
                                   usecols=usecols,
                                   dtype={'Nativity': str, 'OCCP': str, 'INDP': str, 'FOD1P': str, 'RAC1P': str,
                                          'HISP': str, 'SCHL': str, 'SEX': str, 'ESR': str, 'STATE': str,
-                                         'RELSHIPP': str, 'SERIALNO': str},)
+                                         'RELSHIPP': str, 'SERIALNO': str},
+                                  # nrows=100000 # for testing only
+                                  )
             dfs.append(df_part)
 pums_data = pd.concat(dfs, ignore_index=True)
 
@@ -239,28 +243,41 @@ del(major_selection, groups, group_data, group_total, major_counts)
 # Init dataset for domin
 df_for_domin = pums_data[['AGEP', 'AGE-SQUARED', 'HISP', 'log_WAGP', 'NOC', 'SEX', 'STATE', 'WKHP', 'WKWN']]
 
-# One-hot encode categorical vars
-df_for_domin = pd.get_dummies(df_for_domin,
-                              columns=['HISP',  'SEX', 'STATE'],
-                              drop_first=True)  # Drop first cat to avoid redundant data
+# # One-hot encode categorical vars
+# df_for_domin = pd.get_dummies(df_for_domin,
+#                               columns=['HISP',  'SEX', 'STATE'],
+#                               drop_first=True)  # Drop first cat to avoid redundant data
 
-# Define predictor sets
-predictor_sets = {
-    'sex_parenthood': [col for col in df_for_domin.columns if col.startswith('SEX_')] + ['NOC'],
-    'ethnicity': [col for col in df_for_domin.columns if col.startswith("HISP_")],
+# Convert categorical variables to category dtype
+for col in ['HISP', 'SEX', 'STATE']:
+    df_for_domin[col] = df_for_domin[col].astype('category')
+
+# Define groups (raw, unencoded)
+group_defs = {
+    'sex_parenthood': ['SEX', 'NOC'],
+    'ethnicity': ['HISP'],
     'age': ['AGEP', 'AGE-SQUARED'],
-    'state': [col for col in df_for_domin.columns if col.startswith("STATE_")],
-    'time_worked': ['WKHP', 'WKWN']
+    'state': ['STATE'],
+    'time_worked': ['WKHP', 'WKWN'],
 }
 
-# Flatten to single list of all predictors
-all_predictors = [var for group in predictor_sets.values() for var in group]
+# We'll replace each group of categorical variables with a single **group index** via regression:
+group_features = {}
+X_temp = df_for_domin.drop(columns='log_WAGP')
+y_temp = df_for_domin['log_WAGP']
 
-# Run dominance analysis
-X = df_for_domin[all_predictors]
-y = df_for_domin['log_WAGP']
+for group_name, cols in group_defs.items():
+    X_group = pd.get_dummies(df_for_domin[cols], drop_first=True)
+    model = LinearRegression().fit(X_group, y_temp)
+    group_pred = model.predict(X_group)
+    group_features[group_name] = group_pred
 
-dominance_reg1 = Dominance(data=df_for_domin, target='log_WAGP', objective=1)
+# Build final DataFrame with one column per group
+X_reduced = pd.DataFrame(group_features)
+X_reduced['log_WAGP'] = y_temp
+
+# Run dominance analysis with group-level predictors
+dominance_reg1 = Dominance(data=X_reduced, target='log_WAGP', top_k=None, objective=1)
 dominance_reg1.incremental_rsquare()
 dominance_df1 = dominance_reg1.dominance_stats()
 
@@ -293,7 +310,7 @@ r_squared_row = pd.DataFrame({
 # Add N row
 n_row = pd.DataFrame({
     'Predictor or Set of Predictors': ['N'],
-    'Standardized Dominance': [len(df_for_domin)]
+    'Standardized Dominance': [len(X_reduced)]
 })
 
 # Concatenate all
@@ -302,8 +319,7 @@ dominance_table1 = pd.concat([dominance_table1, total_row, r_squared_row, n_row]
 dominance_table1.to_csv('dominance_table_without_OCCPINDP.csv')
 
 # Garbage collect
-del(df_for_domin, predictor_sets, all_predictors, X, y, total_row, r_squared_row, n_row, dominance_reg1, dominance_df1, dominance_table1)
-
+# del(df_for_domin, group_defs, group_features, X_temp, y_temp, group_name, cols, X_group, model, group_pred, group_features, X_reduced, dominance_reg1, dominance_df1)
 
 #%% Dominance analysis 2: with occupation & industry
 
@@ -311,28 +327,41 @@ del(df_for_domin, predictor_sets, all_predictors, X, y, total_row, r_squared_row
 df_for_domin = pums_data[['AGEP', 'AGE-SQUARED', 'HISP', 'INDP', 'log_WAGP', 'NOC', 'OCCP', 'SEX', 'STATE', 'WKHP', 'WKWN']]
 
 # One-hot encode categorical vars
-df_for_domin = pd.get_dummies(df_for_domin,
-                              columns=['HISP', 'INDP', 'OCCP',  'SEX', 'STATE'],
-                              drop_first=True)  # Drop first cat to avoid redundant data
+# df_for_domin = pd.get_dummies(df_for_domin,
+#                               columns=['HISP', 'INDP', 'OCCP',  'SEX', 'STATE'],
+#                               drop_first=True)  # Drop first cat to avoid redundant data
 
-# Define predictor sets
-predictor_sets = {
-    'sex_parenthood': [col for col in df_for_domin.columns if col.startswith('SEX_')] + ['NOC'],
-    'ethnicity': [col for col in df_for_domin.columns if col.startswith("HISP_")],
+# Convert categorical variables to category dtype
+for col in ['HISP', 'INDP', 'OCCP', 'SEX', 'STATE']:
+    df_for_domin[col] = df_for_domin[col].astype('category')
+
+# Define groups (raw, unencoded)
+group_defs = {
+    'sex_parenthood': ['SEX', 'NOC'],
+    'ethnicity': ['HISP'],
     'age': ['AGEP', 'AGE-SQUARED'],
-    'state': [col for col in df_for_domin.columns if col.startswith("STATE_")],
+    'state': ['STATE'],
     'time_worked': ['WKHP', 'WKWN'],
-    'occupation_industry': [col for col in df_for_domin.columns if col.startswith('OCCP_') or col.startswith('INDP_')]
+    'occupation_industry': ['OCCP', 'INDP']
 }
 
-# Flatten to single list of all predictors
-all_predictors = [var for group in predictor_sets.values() for var in group]
+# We'll replace each group of categorical variables with a single **group index** via regression:
+group_features = {}
+X_temp = df_for_domin.drop(columns='log_WAGP')
+y_temp = df_for_domin['log_WAGP']
 
-# Run dominance analysis
-X = df_for_domin[all_predictors]
-y = df_for_domin['log_WAGP']
+for group_name, cols in group_defs.items():
+    X_group = pd.get_dummies(df_for_domin[cols], drop_first=True)
+    model = LinearRegression().fit(X_group, y_temp)
+    group_pred = model.predict(X_group)
+    group_features[group_name] = group_pred
 
-dominance_reg2 = Dominance(data=df_for_domin, target='log_WAGP', objective=1)
+# Build final DataFrame with one column per group
+X_reduced = pd.DataFrame(group_features)
+X_reduced['log_WAGP'] = y_temp
+
+# Run dominance analysis with group-level predictors
+dominance_reg2 = Dominance(data=X_reduced, target='log_WAGP', top_k=None, objective=1)
 dominance_reg2.incremental_rsquare()
 dominance_df2 = dominance_reg2.dominance_stats()
 
@@ -365,7 +394,7 @@ r_squared_row = pd.DataFrame({
 # Add N row
 n_row = pd.DataFrame({
     'Predictor or Set of Predictors': ['N'],
-    'Standardized Dominance with OCCP & INDP': [len(df_for_domin)]
+    'Standardized Dominance with OCCP & INDP': [len(X_reduced)]
 })
 
 # Concatenate all
@@ -374,7 +403,7 @@ dominance_table2 = pd.concat([dominance_table2, total_row, r_squared_row, n_row]
 dominance_table2.to_csv('dominance_table_with_OCCPINDP.csv')
 
 # Garbage collect
-del(df_for_domin, predictor_sets, all_predictors, X, y, total_row, r_squared_row, n_row, dominance_reg2, dominance_df2, dominance_table2)
+del(df_for_domin, group_defs, group_features, X_temp, y_temp, group_name, cols, X_group, model, group_pred, group_features, X_reduced, dominance_reg2, dominance_df2)
 
 
 #%% Kitigawa-Oaxaca-Blinder
