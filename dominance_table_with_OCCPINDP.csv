@@ -1,0 +1,10 @@
+,Predictor or Set of Predictors,Standardized Dominance with OCCP & INDP
+0,occupation_industry,0.6195585549225282
+1,age,0.1350613814793524
+2,sex_parenthood,0.09241467831210956
+3,time_worked,0.08950656291061064
+4,state,0.052281873938462384
+5,ethnicity,0.0111769484369368
+6,TOTAL,1.0
+7,% Variance Explained (R²),0.3888815735971512
+8,N,1358997

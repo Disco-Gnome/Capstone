@@ -403,7 +403,7 @@ dominance_table2 = pd.concat([dominance_table2, total_row, r_squared_row, n_row]
 dominance_table2.to_csv('dominance_table_with_OCCPINDP.csv')
 
 # Garbage collect
-del(df_for_domin, group_defs, group_features, X_temp, y_temp, group_name, cols, X_group, model, group_pred, group_features, X_reduced, dominance_reg2, dominance_df2)
+del(df_for_domin, group_defs, group_features, X_temp, y_temp, group_name, cols, X_group, model, group_pred, X_reduced, dominance_reg2, dominance_df2)
 
 
 #%% Kitigawa-Oaxaca-Blinder

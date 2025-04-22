@@ -1,0 +1,9 @@
+,Predictor or Set of Predictors,Standardized Dominance
+0,age,0.31405960888105877
+1,sex_parenthood,0.28218850548364055
+2,time_worked,0.23506352530736263
+3,state,0.13458227329674685
+4,ethnicity,0.03410608703119124
+5,TOTAL,1.0000000000000002
+6,% Variance Explained (R²),0.19096407812820293
+7,N,1358997
