@@ -4,13 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="59f6b42f-3932-4a72-8246-e420d5bbb09a" name="Changes" comment="inflation-adjustment, domin edit">
-      <change afterPath="$PROJECT_DIR$/Majors_mappings.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="59f6b42f-3932-4a72-8246-e420d5bbb09a" name="Changes" comment="OBD first pass">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Major_Codes_Mapping.csv" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dominance_table_with_OCCPINDP.csv" beforeDir="false" afterPath="$PROJECT_DIR$/dominance_table_with_OCCPINDP.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,6 +53,7 @@
     <MESSAGE value="added tables &amp; dataset" />
     <MESSAGE value="gitignore update" />
     <MESSAGE value="inflation-adjustment, domin edit" />
-    <option name="LAST_COMMIT_MESSAGE" value="inflation-adjustment, domin edit" />
+    <MESSAGE value="OBD first pass" />
+    <option name="LAST_COMMIT_MESSAGE" value="OBD first pass" />
   </component>
 </project>

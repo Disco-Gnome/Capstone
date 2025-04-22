@@ -10,32 +10,37 @@ import zipfile
 vars = pd.read_csv('vars.csv')
 majors_codes_df = pd.read_csv('Majors_mappings.csv')
 majors_codes_dict = {row['code']: row['name'] for _, row in majors_codes_df.iterrows()}
+# Major groups ref: https://www2.census.gov/library/publications/2012/acs/acs-18.pdf
+# see also: https://www2.census.gov/programs-surveys/acs/tech_docs/subject_definitions/2021_ACSSubjectDefinitions.pdf
 major_groups_dict = {row['name']: row['five_group_category'] for _, row in majors_codes_df.iterrows()}
 
 usecols = list(vars['VAR'])
 
 # PUMS 2023 5-Year: https://www2.census.gov/programs-surveys/acs/data/pums/2023/5-Year/
-# us_files = ['psam_pusa.csv', 'psam_pusb.csv', 'psam_pusc.csv', 'psam_pusd.csv']
-# dfs = []
-#
-# with zipfile.ZipFile('csv_pus.zip') as z:
-#     for name in us_files:
-#         with z.open(name) as f:
-#             df_part = pd.read_csv(f,
-#                                   usecols=usecols)
-#             dfs.append(df_part)
-# pums_data = pd.concat(dfs, ignore_index=True)
+us_files = ['psam_pusa.csv', 'psam_pusb.csv', 'psam_pusc.csv', 'psam_pusd.csv']
+dfs = []
+
+with zipfile.ZipFile('csv_pus.zip') as z:
+    for name in us_files:
+        with z.open(name) as f:
+            df_part = pd.read_csv(f,
+                                  usecols=usecols,
+                                  dtype={'Nativity': str, 'OCCP': str, 'INDP': str, 'FOD1P': str, 'RAC1P': str,
+                                         'HISP': str, 'SCHL': str, 'SEX': str, 'ESR': str, 'STATE': str,
+                                         'RELSHIPP': str, 'SERIALNO': str},)
+            dfs.append(df_part)
+pums_data = pd.concat(dfs, ignore_index=True)
 
 # NY only for testing
-with zipfile.ZipFile('csv_pny.zip') as z:
-    with z.open('psam_p36.csv') as f:
-        pums_data = pd.read_csv(f,
-                                usecols=usecols,
-                                dtype={'Nativity': str, 'OCCP': str, 'INDP': str, 'FOD1P': str, 'RAC1P': str,
-                                       'HISP': str, 'SCHL': str, 'SEX': str, 'ESR': str, 'STATE': str, 'RELSHIPP': str,
-                                       'SERIALNO': str},
-                                nrows=300000
-                                )
+# with zipfile.ZipFile('csv_pny.zip') as z:
+#     with z.open('psam_p36.csv') as f:
+#         pums_data = pd.read_csv(f,
+#                                 usecols=usecols,
+#                                 dtype={'Nativity': str, 'OCCP': str, 'INDP': str, 'FOD1P': str, 'RAC1P': str,
+#                                        'HISP': str, 'SCHL': str, 'SEX': str, 'ESR': str, 'STATE': str, 'RELSHIPP': str,
+#                                        'SERIALNO': str},
+#                                 nrows=300000
+#                                 )
 
 # Check resource usage
 print("Dataset RAM usage:", round(pums_data.memory_usage(deep=True).sum() / 1024 ** 3, 4), "GB")
@@ -226,7 +231,7 @@ pivot.loc['N'] = [len(pums_data[pums_data['race-ethnicity-sex'] == group]) for g
 pivot = pivot.round(3)
 
 # Save table
-pivot.to_csv('percent_major_by_group.csv')
+pivot.to_csv('major_by_group_table.csv')
 
 # Garbage collect
 del(major_selection, groups, group_data, group_total, major_counts)
@@ -296,7 +301,8 @@ dominance_table1 = pd.concat([dominance_table1, total_row, r_squared_row, n_row]
 
 dominance_table1.to_csv('dominance_table_without_OCCPINDP.csv')
 
-# del(df_for_domin, predictor_sets, all_predictors, X, y, total_row, r_squared_row, n_row, dominance_reg1, dominance_df1, dominance_table1)
+# Garbage collect
+del(df_for_domin, predictor_sets, all_predictors, X, y, total_row, r_squared_row, n_row, dominance_reg1, dominance_df1, dominance_table1)
 
 
 #%% Dominance analysis 2: with occupation & industry
@@ -367,7 +373,8 @@ dominance_table2 = pd.concat([dominance_table2, total_row, r_squared_row, n_row]
 
 dominance_table2.to_csv('dominance_table_with_OCCPINDP.csv')
 
-# del(df_for_domin, predictor_sets, all_predictors, X, y, total_row, r_squared_row, n_row, dominance_reg2, dominance_df2, dominance_table2)
+# Garbage collect
+del(df_for_domin, predictor_sets, all_predictors, X, y, total_row, r_squared_row, n_row, dominance_reg2, dominance_df2, dominance_table2)
 
 
 #%% Kitigawa-Oaxaca-Blinder
