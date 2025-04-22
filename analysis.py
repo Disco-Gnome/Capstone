@@ -370,7 +370,7 @@ dominance_table2.to_csv('dominance_table_with_OCCPINDP.csv')
 # del(df_for_domin, predictor_sets, all_predictors, X, y, total_row, r_squared_row, n_row, dominance_reg2, dominance_df2, dominance_table2)
 
 
-#%% Run Regressions
+#%% Kitigawa-Oaxaca-Blinder
 # Get ref group
 ref_group = pums_data[pums_data['race-ethnicity-sex'] == 'White non-Hispanic Male']
 
@@ -395,6 +395,3 @@ for group in groups:
     oaxaca = OaxacaBlinder(endog=regression_df['log_WAGP'], exog=X, group=regression_df['group'])
     results = oaxaca.fit()
     oaxacas_dict[group] = results
-
-#%% Kitigawa-Oaxaca-Blinder
-
