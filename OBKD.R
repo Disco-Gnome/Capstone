@@ -32,7 +32,6 @@ for (target_group in comparison_groups) {
   regression_df$OCCP  <- factor(regression_df$OCCP, levels = levels(pums_data$OCCP))
   regression_df$INDP  <- factor(regression_df$INDP, levels = levels(pums_data$INDP))
   regression_df$NATIVITY <- factor(regression_df$NATIVITY, levels = levels(pums_data$NATIVITY))
-  regression_df$ESR <- factor(regression_df$ESR, levels = levels(pums_data$ESR))
 
   # Convert single-level factors to numeric constants
   for (colname in names(regression_df)) {
