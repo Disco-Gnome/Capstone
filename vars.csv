@@ -1,4 +1,5 @@
 ﻿VAR,Name,Notes
+ADJINC,Income adjustment factor,
 AGEP,Age,
 ESR,Employment Status,"Exc. N/A, Unemployed, Not in Labor Force"
 FOD1P,Degree field,
@@ -6,7 +7,6 @@ HISP,Hispanic,
 INDP,Industry,
 NATIVITY,Nativity,
 OCCP,Occupation,
-PINCP,Total income,"Exc. N/A, None, Loss"
 RAC1P,Race,
 RELSHIPP,Relationship,
 SERIALNO,Person or unit serial number,
@@ -16,4 +16,3 @@ STATE,State,
 WAGP,Wages or salary income,"Exc. N/A, None"
 WKHP,Hours worked,"Exc. N/A, <30"
 WKWN,Weeks worked,"Exc. N/A, <52"
-ADJINC,Income adjustment factor,

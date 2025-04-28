@@ -6,7 +6,8 @@ import numpy as np
 import pandas as pd
 import zipfile
 
-# TODO: Pandas for prototyping, switch to Spark dfs for final
+# Pandas is used for this PUMS 1% pop dataset. This code is designed to be easily converted to use Spark dfs for use
+# on the larger restricted-use PUMS 5% pop dataset.
 
 # Data dict: https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2021.pdf
 vars = pd.read_csv('vars.csv')
@@ -27,24 +28,13 @@ with zipfile.ZipFile('csv_pus.zip') as z:
         with z.open(name) as f:
             df_part = pd.read_csv(f,
                                   usecols=usecols,
-                                  dtype={'Nativity': str, 'OCCP': str, 'INDP': str, 'FOD1P': str, 'RAC1P': str,
+                                  dtype={'NATIVITY': str, 'OCCP': str, 'INDP': str, 'FOD1P': str, 'RAC1P': str,
                                          'HISP': str, 'SCHL': str, 'SEX': str, 'ESR': str, 'STATE': str,
                                          'RELSHIPP': str, 'SERIALNO': str},
-                                  # nrows=100000 # for testing only
+                                  # nrows=50000  # for testing only
                                   )
             dfs.append(df_part)
 pums_data = pd.concat(dfs, ignore_index=True)
-
-# NY only for testing
-# with zipfile.ZipFile('csv_pny.zip') as z:
-#     with z.open('psam_p36.csv') as f:
-#         pums_data = pd.read_csv(f,
-#                                 usecols=usecols,
-#                                 dtype={'Nativity': str, 'OCCP': str, 'INDP': str, 'FOD1P': str, 'RAC1P': str,
-#                                        'HISP': str, 'SCHL': str, 'SEX': str, 'ESR': str, 'STATE': str, 'RELSHIPP': str,
-#                                        'SERIALNO': str},
-#                                 nrows=300000
-#                                 )
 
 # Check resource usage
 print("Dataset RAM usage:", round(pums_data.memory_usage(deep=True).sum() / 1024 ** 3, 4), "GB")
@@ -55,11 +45,9 @@ del(vars, majors_codes_df, usecols, f, z)
 
 #%% Drop unwanted values
 # Drop NaN values
-pums_data.dropna(subset=['WKWN', 'WKHP', 'ESR', 'PINCP', 'WAGP', 'FOD1P'], inplace=True)
+pums_data.dropna(subset=['WKWN', 'WKHP', 'ESR', 'WAGP', 'FOD1P'], inplace=True)
 # Drop unemployed & not in labor force
 pums_data = pums_data[~pums_data['ESR'].isin(['3', '6'])]
-# Drop 0 or negative total income
-pums_data = pums_data[pums_data['PINCP'] > 0]
 # Drop educational attainment not BA/BS or AA/AS
 pums_data = pums_data[pums_data['SCHL'].isin(['20', '21'])]
 # Drop 0 or negative salary income
@@ -82,6 +70,7 @@ pums_data['WAGP_2023'] = pums_data['WAGP_2021'] * adjustment_2021_to_2023
 pums_data.drop('WAGP_2021', axis=1, inplace=True)
 del(cpi_2021, cpi_2023, adjustment_2021_to_2023)
 
+
 #%% Add log earnings var
 pums_data['log_WAGP'] = np.log(pums_data['WAGP_2023'])
 
@@ -95,8 +84,8 @@ pums_data['FOD1P5'] = pums_data['FOD1P'].map(major_groups_dict)
 del(majors_codes_dict, major_groups_dict)
 
 
-#%% Add age-squared var
-pums_data['AGE-SQUARED'] = pums_data['AGEP'] ** 2
+#%% Add AGE_SQUARED var
+pums_data['AGE_SQUARED'] = pums_data['AGEP'] ** 2
 
 
 #%% Infer NOC (Number of children)
@@ -125,6 +114,8 @@ pums_data.drop('RELSHIPP', axis=1, inplace=True)
 
 # Garbage collect
 del(child_codes, children, child_counts)
+
+
 #%% Reduce and combine demographic codes
 # Make Hispanic binary
 pums_data['HISP'] = np.where(pums_data['HISP'] == '01', 'non-Hispanic', 'Hispanic')
@@ -145,7 +136,7 @@ pums_data.loc[pums_data['HISP'] == 'Hispanic', 'RAC1P'] = 'Hispanic'
 pums_data['SEX'] = np.where(pums_data['SEX'] == '1', 'Male', 'Female')
 
 # Create sex-race-ethnicity groups
-pums_data['race-ethnicity-sex'] = pums_data['RAC1P'] + " " + pums_data['SEX']
+pums_data['race_ethnicity_sex'] = pums_data['RAC1P'] + " " + pums_data['SEX']
 
 # Garbage Collect
 del(race_map)
@@ -176,15 +167,15 @@ def dissimilarity_index(ref_dist, group_dist):
     return 0.5 * np.sum(np.abs(ref_aligned - group_aligned))
 
 # Calculate reference group major distribution (normalized value counts)
-ref_group = pums_data[pums_data['race-ethnicity-sex'] == 'White non-Hispanic Male']
+ref_group = pums_data[pums_data['race_ethnicity_sex'] == 'White non-Hispanic Male']
 ref_major_dist = ref_group['FOD1P'].value_counts(normalize=True)
 # Get group names
-groups = pums_data['race-ethnicity-sex'].unique().tolist()
+groups = pums_data['race_ethnicity_sex'].unique().tolist()
 
 rows = []  # init rows
-for group in groups:  # For each race-ethnicity-sex group
+for group in groups:  # For each race_ethnicity_sex group
     # Get data for group
-    group_data = pums_data[pums_data['race-ethnicity-sex'] == group]
+    group_data = pums_data[pums_data['race_ethnicity_sex'] == group]
     # Calculate group major distribution (normalized value counts)
     group_major_dist = group_data['FOD1P'].value_counts(normalize=True)
 
@@ -197,7 +188,7 @@ for group in groups:  # For each race-ethnicity-sex group
 
     # Create a list of dicts for each row
     rows.append({
-        'race-ethnicity-sex': group,
+        'race_ethnicity_sex': group,
         'dissimilarity_index': round(D, 4),
         'mean_earnings_diff': round(mean_diff, 2),
         'N': len(group_data)
@@ -210,7 +201,9 @@ dissimilarity_table = pd.DataFrame(rows)
 dissimilarity_table.to_csv("dissimilarity_table.csv", index=False)
 
 # Garbage collect
-del(ref_group, ref_major_dist, groups, rows, group, group_data, group_major_dist, D, mean_diff)
+# del(ref_group, ref_major_dist, groups, rows, group, group_data, group_major_dist, D, mean_diff)
+
+
 #%% Percent with each baccalaureate major in each sex-race group
 # Select majors to inspect
 major_selection = ["Business Management And Administration", "General Business", "Finance", "Mechanical Engineering",
@@ -221,15 +214,15 @@ major_selection = ["Business Management And Administration", "General Business",
 pivot = pd.DataFrame(index=major_selection)
 pivot.index.name = "Major"
 # Get demographic groups
-groups = pums_data['race-ethnicity-sex'].unique()
+groups = pums_data['race_ethnicity_sex'].unique()
 # Get counts by group
 for group in groups:
-    group_data = pums_data[pums_data['race-ethnicity-sex'] == group]
+    group_data = pums_data[pums_data['race_ethnicity_sex'] == group]
     group_total = len(group_data)
     major_counts = group_data['FOD1P'].value_counts(normalize=True).mul(100).reindex(major_selection, fill_value=0)
     pivot[group] = major_counts
 # Add N row
-pivot.loc['N'] = [len(pums_data[pums_data['race-ethnicity-sex'] == group]) for group in groups]
+pivot.loc['N'] = [len(pums_data[pums_data['race_ethnicity_sex'] == group]) for group in groups]
 
 # Round
 pivot = pivot.round(3)
@@ -239,14 +232,11 @@ pivot.to_csv('major_by_group_table.csv')
 
 # Garbage collect
 del(major_selection, groups, group_data, group_total, major_counts)
+
+
 #%% Dominance analysis 1: without occupation & industry
 # Init dataset for domin
-df_for_domin = pums_data[['AGEP', 'AGE-SQUARED', 'HISP', 'log_WAGP', 'NOC', 'SEX', 'STATE', 'WKHP', 'WKWN']]
-
-# # One-hot encode categorical vars
-# df_for_domin = pd.get_dummies(df_for_domin,
-#                               columns=['HISP',  'SEX', 'STATE'],
-#                               drop_first=True)  # Drop first cat to avoid redundant data
+df_for_domin = pums_data[['AGEP', 'AGE_SQUARED', 'HISP', 'log_WAGP', 'NOC', 'SEX', 'STATE', 'WKHP', 'WKWN']]
 
 # Convert categorical variables to category dtype
 for col in ['HISP', 'SEX', 'STATE']:
@@ -256,7 +246,7 @@ for col in ['HISP', 'SEX', 'STATE']:
 group_defs = {
     'sex_parenthood': ['SEX', 'NOC'],
     'ethnicity': ['HISP'],
-    'age': ['AGEP', 'AGE-SQUARED'],
+    'age': ['AGEP', 'AGE_SQUARED'],
     'state': ['STATE'],
     'time_worked': ['WKHP', 'WKWN'],
 }
@@ -267,7 +257,21 @@ X_temp = df_for_domin.drop(columns='log_WAGP')
 y_temp = df_for_domin['log_WAGP']
 
 for group_name, cols in group_defs.items():
-    X_group = pd.get_dummies(df_for_domin[cols], drop_first=True)
+    X_group = []
+
+    for col in cols:
+        if df_for_domin[col].dtype.name == 'category':
+            # If categorical, one-hot encode
+            dummies = pd.get_dummies(df_for_domin[col], prefix=col, drop_first=True)
+            X_group.append(dummies)
+        else:
+            # If numeric, use as-is
+            X_group.append(df_for_domin[[col]])
+
+    # Concatenate all variables back together
+    X_group = pd.concat(X_group, axis=1)
+
+    # Create and run model for group
     model = LinearRegression().fit(X_group, y_temp)
     group_pred = model.predict(X_group)
     group_features[group_name] = group_pred
@@ -301,7 +305,7 @@ total_row = pd.DataFrame({
     'Standardized Dominance': [dominance_table1['Standardized Dominance'].sum()]
 })
 
-# Add R² row
+# Add R-sqrd row
 r_squared_row = pd.DataFrame({
     'Predictor or Set of Predictors': ['% Variance Explained (R²)'],
     'Standardized Dominance':  dominance_df1['Total Dominance'].sum()
@@ -321,10 +325,11 @@ dominance_table1.to_csv('dominance_table_without_OCCPINDP.csv')
 # Garbage collect
 # del(df_for_domin, group_defs, group_features, X_temp, y_temp, group_name, cols, X_group, model, group_pred, group_features, X_reduced, dominance_reg1, dominance_df1)
 
+
 #%% Dominance analysis 2: with occupation & industry
 
 # Init dataset for domin
-df_for_domin = pums_data[['AGEP', 'AGE-SQUARED', 'HISP', 'INDP', 'log_WAGP', 'NOC', 'OCCP', 'SEX', 'STATE', 'WKHP', 'WKWN']]
+df_for_domin = pums_data[['AGEP', 'AGE_SQUARED', 'HISP', 'INDP', 'log_WAGP', 'NOC', 'OCCP', 'SEX', 'STATE', 'WKHP', 'WKWN']]
 
 # One-hot encode categorical vars
 # df_for_domin = pd.get_dummies(df_for_domin,
@@ -339,7 +344,7 @@ for col in ['HISP', 'INDP', 'OCCP', 'SEX', 'STATE']:
 group_defs = {
     'sex_parenthood': ['SEX', 'NOC'],
     'ethnicity': ['HISP'],
-    'age': ['AGEP', 'AGE-SQUARED'],
+    'age': ['AGEP', 'AGE_SQUARED'],
     'state': ['STATE'],
     'time_worked': ['WKHP', 'WKWN'],
     'occupation_industry': ['OCCP', 'INDP']
@@ -351,7 +356,21 @@ X_temp = df_for_domin.drop(columns='log_WAGP')
 y_temp = df_for_domin['log_WAGP']
 
 for group_name, cols in group_defs.items():
-    X_group = pd.get_dummies(df_for_domin[cols], drop_first=True)
+    X_group = []
+
+    for col in cols:
+        if df_for_domin[col].dtype.name == 'category':
+            # If categorical, one-hot encode
+            dummies = pd.get_dummies(df_for_domin[col], prefix=col, drop_first=True)
+            X_group.append(dummies)
+        else:
+            # If numeric, use as-is
+            X_group.append(df_for_domin[[col]])
+
+    # Concatenate all variables back together
+    X_group = pd.concat(X_group, axis=1)
+
+    # Create and run model for group
     model = LinearRegression().fit(X_group, y_temp)
     group_pred = model.predict(X_group)
     group_features[group_name] = group_pred
@@ -385,7 +404,7 @@ total_row = pd.DataFrame({
     'Standardized Dominance with OCCP & INDP': [dominance_table2['Standardized Dominance with OCCP & INDP'].sum()]
 })
 
-# Add R² row
+# Add R-sqrd row
 r_squared_row = pd.DataFrame({
     'Predictor or Set of Predictors': ['% Variance Explained (R²)'],
     'Standardized Dominance with OCCP & INDP':  dominance_df2['Total Dominance'].sum()
@@ -403,31 +422,17 @@ dominance_table2 = pd.concat([dominance_table2, total_row, r_squared_row, n_row]
 dominance_table2.to_csv('dominance_table_with_OCCPINDP.csv')
 
 # Garbage collect
-del(df_for_domin, group_defs, group_features, X_temp, y_temp, group_name, cols, X_group, model, group_pred, X_reduced, dominance_reg2, dominance_df2)
+# del(df_for_domin, group_defs, group_features, X_temp, y_temp, group_name, cols, X_group, model, group_pred, X_reduced, dominance_reg2, dominance_df2)
 
 
-#%% Kitigawa-Oaxaca-Blinder
-# Get ref group
-ref_group = pums_data[pums_data['race-ethnicity-sex'] == 'White non-Hispanic Male']
+#%% Kitigawa-Oaxaca-Blinder with granular field of degree
+# Filter data for analysis
+pums_data_for_OBD = pums_data[['AGEP', 'AGE_SQUARED', 'ESR', 'FOD1P', 'INDP', 'log_WAGP',
+                               'NATIVITY', 'NOC', 'OCCP', 'race_ethnicity_sex', 'SCHL', 'STATE', 'WKHP', 'WKWN']]
 
-# Get demographic groups
-groups = pums_data['race-ethnicity-sex'].unique()
-groups = groups[groups != 'White non-Hispanic Male']
+pums_data_for_OBD_5cat = pums_data[['AGEP', 'AGE_SQUARED', 'ESR', 'FOD1P5', 'INDP', 'log_WAGP',
+                               'NATIVITY', 'NOC', 'OCCP', 'race_ethnicity_sex', 'SCHL', 'STATE', 'WKHP', 'WKWN']]
 
-oaxacas_dict = {}
-for group in groups:
-    # Get comparison group
-    comparison_group = pums_data[pums_data['race-ethnicity-sex'] == group]
-    # Combine both groups
-    regression_df = pd.concat([ref_group, comparison_group])
-    # One-hot encode relevant categorical vars
-    regression_df = pd.get_dummies(regression_df, columns=['FOD1P', 'STATE', 'OCCP', 'INDP', 'Nativity'], drop_first=True)
-    # Get ind var data, ignoring dependent var and group
-    X_cols = [col for col in regression_df.columns if col not in ['log_WAGP', 'race-ethnicity-sex']]
-    # Define predictors and target
-    X = regression_df[X_cols]
-    y = regression_df['log_WAGP']
-    regression_df['group'] = (regression_df['race-ethnicity-sex'] == 'White non-Hispanic Male').astype(int)
-    oaxaca = OaxacaBlinder(endog=regression_df['log_WAGP'], exog=X, group=regression_df['group'])
-    results = oaxaca.fit()
-    oaxacas_dict[group] = results
+pums_data_for_OBD.to_csv('pums_data_for_OBD1.csv', index=False)
+pums_data_for_OBD_5cat.to_csv('pums_data_for_OBD_5cat.csv', index=False)
+#%%

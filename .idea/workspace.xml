@@ -5,12 +5,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="59f6b42f-3932-4a72-8246-e420d5bbb09a" name="Changes" comment="domin edit.">
+      <change afterPath="$PROJECT_DIR$/ODB.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dissimilarity_table.csv" beforeDir="false" afterPath="$PROJECT_DIR$/dissimilarity_table.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dominance_table_with_OCCPINDP.csv" beforeDir="false" afterPath="$PROJECT_DIR$/dominance_table_with_OCCPINDP.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dominance_table_without_OCCPINDP.csv" beforeDir="false" afterPath="$PROJECT_DIR$/dominance_table_without_OCCPINDP.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/major_by_group_table.csv" beforeDir="false" afterPath="$PROJECT_DIR$/major_by_group_table.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vars.csv" beforeDir="false" afterPath="$PROJECT_DIR$/vars.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="R Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -30,7 +45,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
     "last_opened_file_path": "D:/School/2024 Fall/CSC-74020",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+    "settings.editor.selected.configurable": "org.jetbrains.r.configuration.RSettingsProjectConfigurable"
   }
 }]]></component>
   <component name="RunManager">
