@@ -1,11 +1,11 @@
 race_ethnicity_sex,dissimilarity_index,mean_earnings_diff,N
-White non-Hispanic Male,0.0,0.0,516623
-White non-Hispanic Female,0.3648,-46371.05,448232
-Other Male,0.0887,-16160.64,29141
-Asian non-Hispanic Female,0.3272,-37369.59,61958
-Black non-Hispanic Female,0.3687,-61902.62,46159
-Asian non-Hispanic Male,0.2788,-6906.97,63025
-Hispanic Female,0.3509,-62917.83,67627
-Black non-Hispanic Male,0.1472,-47041.37,34010
-Other Female,0.3497,-51496.5,29389
-Hispanic Male,0.1109,-36873.35,62873
+White non-Hispanic Male,0.0,0.0,516616
+White non-Hispanic Female,0.3648,-46371.89,448232
+Other Male,0.0887,-16159.35,29140
+Asian non-Hispanic Female,0.3272,-37370.42,61958
+Black non-Hispanic Female,0.3687,-61901.38,46157
+Asian non-Hispanic Male,0.2788,-6906.61,63023
+Hispanic Female,0.3509,-62918.02,67626
+Black non-Hispanic Male,0.1472,-47042.31,34006
+Other Female,0.3497,-51497.34,29389
+Hispanic Male,0.1108,-36870.97,62867

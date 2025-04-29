@@ -199,7 +199,7 @@ dissimilarity_table = pd.DataFrame(rows)
 dissimilarity_table.to_csv("dissimilarity_table.csv", index=False)
 
 # Garbage collect
-# del(ref_group, ref_major_dist, groups, rows, group, group_data, group_major_dist, D, mean_diff)
+del(ref_group, ref_major_dist, groups, rows, group, group_data, group_major_dist, D, mean_diff)
 
 
 #%% Percent with each baccalaureate major in each sex-race group
@@ -230,19 +230,21 @@ pivot.to_csv('major_by_group_table.csv')
 
 # Garbage collect
 del(major_selection, groups, group_data, group_total, major_counts)
-#%%  Save for dominance analysis
-pums_data_for_domin = pums_data.drop('WAGP')
 
-pums_data.to_csv('pums_data_for_domin.csv', index=False)
+
+#%%  Save for dominance analysis
+with zipfile.ZipFile('pums_data_for_domin.zip', mode='w', compression=zipfile.ZIP_DEFLATED) as archive:
+    with archive.open('pums_data_for_domin.csv', mode='w') as file:
+        pums_data.to_csv(file, index=False)
 
 
 #%% Save data for OBD
 # Filter data to save for analysis
-pums_data_for_OBD = pums_data[['AGEP', 'AGE_SQUARED', 'ESR', 'FOD1P', 'INDP', 'log_WAGP',
-                               'NATIVITY', 'NOC', 'OCCP', 'race_ethnicity_sex', 'SCHL', 'STATE', 'WKHP', 'WKWN']]
+pums_data = pums_data[['AGEP', 'AGE_SQUARED', 'ESR', 'FOD1P', 'FOD1P5', 'INDP', 'log_WAGP',
+                       'NATIVITY', 'NOC', 'OCCP', 'race_ethnicity_sex', 'STATE', 'WKHP', 'WKWN']]
 
-pums_data_for_OBD_5cat = pums_data[['AGEP', 'AGE_SQUARED', 'ESR', 'FOD1P5', 'INDP', 'log_WAGP',
-                               'NATIVITY', 'NOC', 'OCCP', 'race_ethnicity_sex', 'SCHL', 'STATE', 'WKHP', 'WKWN']]
+with zipfile.ZipFile('pums_data_for_OBKD.zip', mode='w', compression=zipfile.ZIP_DEFLATED) as archive:
+    with archive.open('pums_data_for_OBKD.csv', mode='w') as file:
+        pums_data.to_csv(file, index=False)
 
-pums_data_for_OBD.to_csv('pums_data_for_OBD1.csv', index=False)
-pums_data_for_OBD_5cat.to_csv('pums_data_for_OBD_5cat.csv', index=False)
+#%%

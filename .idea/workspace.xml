@@ -4,11 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="59f6b42f-3932-4a72-8246-e420d5bbb09a" name="Changes" comment="ODB debugging">
-      <change afterPath="$PROJECT_DIR$/dominance.py" afterDir="false" />
+    <list default="true" id="59f6b42f-3932-4a72-8246-e420d5bbb09a" name="Changes" comment="ODB debugging. Separated scripts.">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ODB.R" beforeDir="false" afterPath="$PROJECT_DIR$/ODB.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocessing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OBKD.R" beforeDir="false" afterPath="$PROJECT_DIR$/OBKD.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dissimilarity_table.csv" beforeDir="false" afterPath="$PROJECT_DIR$/dissimilarity_table.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/domin.py" beforeDir="false" afterPath="$PROJECT_DIR$/domin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/major_by_group_table.csv" beforeDir="false" afterPath="$PROJECT_DIR$/major_by_group_table.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocessing.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocessing.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,15 +38,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.analysis.executor": "Debug",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "D:/School/2024 Fall/CSC-74020",
-    "settings.editor.selected.configurable": "org.jetbrains.r.configuration.RSettingsProjectConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.analysis.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/School/2024 Fall/CSC-74020&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.appearance&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="preprocessing" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Capstone" />
@@ -97,6 +100,7 @@
     <MESSAGE value="pre-full data run" />
     <MESSAGE value="domin edit." />
     <MESSAGE value="ODB debugging" />
-    <option name="LAST_COMMIT_MESSAGE" value="ODB debugging" />
+    <MESSAGE value="ODB debugging. Separated scripts." />
+    <option name="LAST_COMMIT_MESSAGE" value="ODB debugging. Separated scripts." />
   </component>
 </project>

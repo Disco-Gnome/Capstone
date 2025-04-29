@@ -3,12 +3,15 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.linear_model import LinearRegression
+import zipfile
 
-pums_data = pd.read_csv('pums_data_for_domin.csv',
-                        dtype={'ESR': str, 'FOD1P': str, 'HISP': str, 'INDP': str, 'NATIVITY': str, 'OCCP': str,
-                               'RAC1P': str, 'SCHL': str, 'SERIALNO': str, 'SEX': str,  'STATE': str
-                               },
-                        )
+with zipfile.ZipFile('pums_data_for_domin.zip') as archive:
+    with archive.open('pums_data_for_domin.csv') as f:
+        pums_data = pd.read_csv(f,
+                                dtype={'ESR': str, 'FOD1P': str, 'HISP': str, 'INDP': str, 'NATIVITY': str, 'OCCP': str,
+                                       'RAC1P': str, 'SCHL': str, 'SERIALNO': str, 'SEX': str,  'STATE': str
+                                       },
+                                )
 
 #%% Dominance analysis 1: without occupation & industry
 # Init dataset for domin
