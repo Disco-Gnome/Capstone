@@ -1,11 +1,11 @@
-race_ethnicity_sex,dissimilarity_index,mean_earnings_diff,N
-White non-Hispanic Male,0.0,0.0,516616
-White non-Hispanic Female,0.3648,-46371.89,448232
-Other Male,0.0887,-16159.35,29140
-Asian non-Hispanic Female,0.3272,-37370.42,61958
-Black non-Hispanic Female,0.3687,-61901.38,46157
-Asian non-Hispanic Male,0.2788,-6906.61,63023
-Hispanic Female,0.3509,-62918.02,67626
-Black non-Hispanic Male,0.1472,-47042.31,34006
-Other Female,0.3497,-51497.34,29389
-Hispanic Male,0.1108,-36870.97,62867
+race_ethnicity_sex,Mean Earnings Difference,dissimilarity_index,mean_earnings_diff,N
+White non-Hispanic Male, $-   ,0,0,516616
+Black non-Hispanic Male," $47,042.31 ",0.1472,-47042.31,34006
+Hispanic Male," $36,870.97 ",0.1108,-36870.97,62867
+Asian Male," $6,906.61 ",0.2788,-6906.61,63023
+Other Male," $16,159.35 ",0.0887,-16159.35,29140
+White Female," $46,371.89 ",0.3648,-46371.89,448232
+Black Female," $61,901.38 ",0.3687,-61901.38,46157
+Hispanic Female," $62,918.02 ",0.3509,-62918.02,67626
+Asian Female," $37,370.42 ",0.3272,-37370.42,61958
+Other Female," $51,497.34 ",0.3497,-51497.34,29389
